@@ -1,0 +1,60 @@
+service password-encryption
+!
+hostname R1
+!
+enable secret class
+enable password cisco
+!
+no ip domain lookup
+ip domain name span.com
+!
+login on-success log
+!
+diagnostic bootup level minimal
+!
+username guardian privilege 15 secret 9 $9$to.8jgEg7txVL.$8t2xYHc2j9vhVuP6dW9u6WwSYVhJoL/snUNYCzwBqUs
+username lector privilege 15 secret 9 $9$kXQEndg6wqi0Lk$p21gc9KOu6B.VSbsBx5NXZHMh2Y/OZ8Ce3OKCr89B36
+username Maarten secret 9 $9$0HayyLYiLEv03E$MRulTXeyBa.x6WaxfmvOjQvid91NlkHDeV9W0GmrTqs
+!
+redundancy
+ mode none
+!
+interface GigabitEthernet0/0/0
+ description ip address R1
+ ip address 192.168.1.1 255.255.255.0
+ negotiation auto
+!
+interface GigabitEthernet0/0/1
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface Serial0/1/0
+ no ip address
+ shutdown
+!
+interface Serial0/1/1
+ no ip address
+ shutdown
+!
+no ip http server
+ip http secure-server
+ip forward-protocol nd
+ip route 0.0.0.0 0.0.0.0 GigabitEthernet0/0/0
+!
+control-plane
+!
+banner motd ^CThis is a secure system. Authorized Access Only^C
+!
+line con 0
+ password cisco
+ login
+ transport input none
+ stopbits 1
+line aux 0
+ stopbits 1
+username Maarten secret class
+line vty 0 4
+ login local
+ transport input ssh
+!

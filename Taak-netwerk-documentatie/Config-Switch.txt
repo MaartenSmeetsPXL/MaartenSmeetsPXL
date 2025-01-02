@@ -1,0 +1,61 @@
+service password-encryption
+!
+hostname S1
+!
+enable secret class
+enable password cisco
+!
+no ip domain lookup
+ip domain name span.com
+!
+login on-success log
+!
+license boot level network-essentials addon dna-essentials
+!
+diagnostic bootup level minimal
+!
+username guardian privilege 15 secret 9 $9$vMJuD9efzNXbQk$93r0FT92sqsHBnJrMsRx2j3XRQI5fylDn1oOTg07qSo
+username lector privilege 15 secret 9 $9$56vxkInVTox3FE$dBQRYm9yhG7tqKuwhrOHlDXE1.RkBE5Xai6rVSSu6tI
+username Maarten secret 9 $9$ZmyGMSK377B3uk$r3vqdgkhb12V0fJeFuxkthxplyE8Fpg9hCOGr2epe4g
+!
+redundancy
+ mode sso
+!
+transceiver type all
+ monitoring
+!
+policy-map system-cpp-policy
+!
+interface GigabitEthernet0/0
+ vrf forwarding Mgmt-vrf
+ no ip address
+!
+interface Vlan1
+ description "ip address S1"
+ ip address 192.168.1.2 255.255.255.0
+!
+ip default-gateway 192.168.1.1
+ip forward-protocol nd
+ip http server
+ip http secure-server
+!
+control-plane
+ service-policy input system-cpp-policy
+!
+banner motd ^CThis is a secure system. Authorized Access OnlyC^
+!
+line con 0
+ password cisco
+ login
+ stopbits 1
+line aux 0
+username Maarten secret class
+line vty 0 4
+ password class
+ login local
+ transport input ssh
+line vty 5 15
+ password class
+ login
+ transport input ssh
+!

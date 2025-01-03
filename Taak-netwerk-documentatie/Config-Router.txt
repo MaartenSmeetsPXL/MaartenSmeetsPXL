@@ -20,14 +20,20 @@ redundancy
  mode none
 !
 interface GigabitEthernet0/0/0
- description ip address R1
+ description R1 to S1
  ip address 192.168.1.1 255.255.255.0
- negotiation auto
+ duplex auto
+ speed auto
+ ipv6 address 2001:DB8:ACAD:1::1/64
+ ipv6 enable
 !
 interface GigabitEthernet0/0/1
- no ip address
- shutdown
- negotiation auto
+ description R1 to S2
+ ip address 192.168.1.17 255.255.255.240
+ duplex auto
+ speed auto
+ ipv6 address 2001:DB8:ACAD:2::1/64
+ ipv6 enable
 !
 interface Serial0/1/0
  no ip address
